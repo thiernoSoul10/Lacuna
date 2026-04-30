@@ -14,7 +14,7 @@ public class Jeu {
     int nbFleurs = 49 ; // nombre de fleurs 
 
     private static final double DIST_MIN_FLEURS = 20; // distance min entre les fleurs 
-    private static final int  NB_JOUEURS = 2; // distance min entre les fleurs 
+    private static final int  NB_JOUEURS = 2; 
     
 
     //// Attributs pour les joueurs
