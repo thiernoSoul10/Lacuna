@@ -7,9 +7,9 @@ public final class Configuration {
     private static String PATH = "Images";
     private static boolean debug = true; // tous les messages sont affichés si vrai
     private static boolean debugError = true;
-    public enum Mode { GRAHIQUE, TEXTUEL }
+    public enum Mode {GRAPHIQUE, TEXTUEL }
 
-    public static Mode mode = Mode.GRAHIQUE;
+    public static Mode mode = Mode.GRAPHIQUE;
     
     public static FileInputStream ouvre(String path){
         FileInputStream in = null;
