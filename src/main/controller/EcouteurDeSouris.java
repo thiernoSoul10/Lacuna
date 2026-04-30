@@ -9,7 +9,6 @@ public class EcouteurDeSouris extends MouseAdapter {
         private Jeu game ;
         private JeuGraphique jeuGraphique;
 
-
     public EcouteurDeSouris(JeuGraphique jeuGraphique) {
         this.game = jeuGraphique.jeu;
         this.jeuGraphique = jeuGraphique;
