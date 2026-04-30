@@ -5,10 +5,16 @@ import java.util.Random;
 
 import global.Configuration;
 
+
+
 public class Jeu {
     private Cercle cercleDeJeu ;  // le cercle du jeu
     private ArrayList<Pion> pions; //contient tous les pions actuel  dans le cercle
     private ArrayList<Fleur> fleurs; 
+    public  ArrayList<Fleur> fleursjoueur1 = new ArrayList<>(); // les fleurs du joueur 1
+    public ArrayList<Fleur> fleursjoueur2 = new ArrayList<>(); // les fleurs du joueur 2
+    public ArrayList<Pion> pionsjoueur1 = new ArrayList<>(); // les pions du joueur 1
+    public ArrayList<Pion> pionsjoueur2 = new ArrayList<>(); // les pions du joueur 2
 
     int nbPions = 12 ; // nombre de pions
     int nbFleurs = 49 ; // nombre de fleurs 
@@ -19,7 +25,7 @@ public class Jeu {
 
     //// Attributs pour les joueurs
     private Joueur[] joueurs; // la liste des joueurs 
-    int currentPlayerIndex; // 0 pour le joueur 1 
+    public int currentPlayerIndex; // 0 pour le joueur 1 
     
 
     private Random random;
@@ -53,6 +59,11 @@ public class Jeu {
         initPions();
 
         System.out.println("Game created");
+    }
+
+    public Jeu(int WIDTH, int HEIGHT, Cercle cercleDeJeu, int nbPions) {
+        this(WIDTH, HEIGHT, cercleDeJeu);
+        this.nbPions = nbPions;
     }
 
     ////////////////////////////////////GETTERS ET SETTERS METHODES /////////////////////////////////////////
@@ -119,11 +130,11 @@ public class Jeu {
         for (Types.TypeFleur type : Types.TypeFleur.values()) {
             for (int i = 0; i < 7; i++) {
                 Coordonnees pos = genererPositionAleatoire(fleurs);
-                fleurs.add(new Fleur(type, pos));
+                    fleurs.add(new Fleur(type, pos));
             }
         }
     }
-    
+
     public void initPions() {
         pions.clear();
 
@@ -137,13 +148,13 @@ public class Jeu {
 
     private Coordonnees genererPositionAleatoire(ArrayList<Fleur> fleurs) {
         Coordonnees pos;
-
+        // Générer des coordonnées aléatoires dans le cercle de jeu
         do {
-            double angle = Math.random() * 2 * Math.PI;
-            double r = Math.sqrt(Math.random()) * cercleDeJeu.getRayon();
+            double angle = Math.random() * 2 * Math.PI;// Angle aléatoire entre 0 et 2π
+            double r = Math.sqrt(Math.random()) * cercleDeJeu.getRayon();// Rayon aléatoire entre 0 et le rayon du cercle (avec distribution uniforme)
 
-            double x = cercleDeJeu.getCentre().getX() + r * Math.cos(angle);
-            double y = cercleDeJeu.getCentre().getY() + r * Math.sin(angle);
+            double x = cercleDeJeu.getCentre().getX() + r * Math.cos(angle);// Calcul de la coordonnée x
+            double y = cercleDeJeu.getCentre().getY() + r * Math.sin(angle);// Calcul de la coordonnée y
 
             pos = new Coordonnees((int) x, (int) y);
 
@@ -302,8 +313,11 @@ public class Jeu {
     }
 
     private boolean tousLesPionsPlaces(){
-        return pions.size() == 0; 
+    for(Pion p : pions){
+        if(p.getPosition() == null) return false;
     }
+    return true;
+}
 
     //////////////////////////////pour l'affichage ////////////////////////////////////////
     public void afficher() {
@@ -328,7 +342,7 @@ public class Jeu {
 
                 if (symbole == ' ') {
                     for (Fleur fleur : fleurs) {
-                        if (fleur != null && fleur.getPosition().equals(position)) {
+                        if (fleur != null && fleur.getPosition().equals(position) ) {
                             symbole = fleur.typeFleurToChar();
                             break;
                         }

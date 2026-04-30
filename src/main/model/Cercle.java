@@ -63,6 +63,10 @@ public class Cercle {
     //attention: on suppose ici que si le point est sur la circonference 
     //alors il n'appartient pas au cercle ( c'est pour celà on a mis < et non <= )
     public boolean contientPoint(Coordonnees p){
+        System.out.println("Coordonnées du point : (" + p.getX() + ", " + p.getY() + ")");
+        System.out.println("Coordonnées du centre : (" + centre.getX() + ", " + centre.getY() + ")");
+        System.out.println("Rayon du cercle : " + rayon);
+        System.out.println("Distance au centre : " + distanceAuCentre(p) + ", Rayon : " + rayon);
         return distanceAuCentre(p) < rayon ;
 
     }
