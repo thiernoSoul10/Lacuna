@@ -219,7 +219,7 @@ public class Jeu {
     }
 
 
-
+    /*============= fonctions auxiliares =================*/
 
 
     // on verifie si la position où on place le pion est libre
