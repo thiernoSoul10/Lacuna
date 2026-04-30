@@ -12,12 +12,21 @@ public class Pion {
         this.position = position;
     }
 
-    public Types.TypePion getTypePion() {
+    public Types.TypePion getType() {
         return type;
     }
 
     public Coordonnees getPosition() {
         return position;
+    }
+
+    public void setType(Types.TypePion type){
+        this.type = type ;
+    }
+    
+    public void setPosition(Coordonnees position){
+        this.position = position ;
+        
     }
 
     public char typePionToChar() {

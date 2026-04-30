@@ -1,4 +1,4 @@
-package global;
+package model;
 
 public class Coordonnees implements Comparable<Coordonnees> {
     public int x;

@@ -3,21 +3,23 @@ package model;
 
 
 public class Fleur {
-    private Types.TypeFleur type; // Type de la fleur ne jamais modifié après la création
-    private Coordonnees position; // Position de la fleur, peut pas être modifiée après la création
+    private Types.TypeFleur type; // Type de la fleur 
+    private Coordonnees position; // Position de la fleur
 
     public Fleur(Types.TypeFleur type, Coordonnees position) {
         this.type = type;
         this.position = position;
     }
 
-    public Types.TypeFleur getTypeFleur() {
+    public Types.TypeFleur getType() {
         return type;
     }
 
     public Coordonnees getPosition() {
         return position;
     }
+
+    
 
     public char typeFleurToChar() {
         switch (type) {
