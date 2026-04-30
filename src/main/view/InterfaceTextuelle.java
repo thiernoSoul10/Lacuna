@@ -1,7 +1,7 @@
 package view;
 
 import global.Configuration;
-import global.Coordonnees;
+import model.Coordonnees;
 import model.Jeu;
 
 public class InterfaceTextuelle {

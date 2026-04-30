@@ -145,7 +145,7 @@ public class Jeu {
             double x = cercleDeJeu.getCentre().getX() + r * Math.cos(angle);
             double y = cercleDeJeu.getCentre().getY() + r * Math.sin(angle);
 
-            pos = new Coordonnees(x, y);
+            pos = new Coordonnees((int) x, (int) y);
 
         } while (!positionValide(pos, fleurs));
 
@@ -184,7 +184,7 @@ public class Jeu {
      // pour placer un pion dans le cercle de jeu 
     public boolean placePion(Pion pion, Coordonnees pos) {
 
-        if (!cercleDeJeu.contient(pos)) {
+        if (!cercleDeJeu.contientPoint(pos)) {
             System.out.println("PION HORS DU CERCLE : " + pos.getX() + ", " + pos.getY());
             return false;
         }

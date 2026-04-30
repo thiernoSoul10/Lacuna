@@ -9,7 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import global.Configuration;
-import global.Coordonnees;
+import model.Coordonnees;
 import model.Fleur;
 import model.Jeu;
 import model.Pion;
@@ -147,7 +147,7 @@ public class JeuGraphique extends JComponent {
         for (Fleur fleur : fleurs) {
             if (fleur != null) {
                 Image img = null;
-                switch (fleur.getTypeFleur()) {
+                switch (fleur.getType()) {
                     case ROUGE: img = rougeImg; break;
                     case BLEUE: img = bleueImg; break;
                     case JAUNE: img = jauneImg; break;
@@ -170,7 +170,7 @@ public class JeuGraphique extends JComponent {
         // Dessiner les pions avec mise à l'échelle
         for (Pion pion : pions) {
             Image img = null;
-            switch (pion.getTypePion()) {
+            switch (pion.getType()) {
                 case OR: img = orImg; break;
                 case ARGENT: img = argentImg; break;
                 default: break;

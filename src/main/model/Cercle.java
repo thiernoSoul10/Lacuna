@@ -8,7 +8,7 @@ public class Cercle {
     //CONSTRUCTEUR////
 
     public Cercle(Coordonnees centre, int rayon ){
-        this.Coordonnees = Coordonnees;
+        this.centre = centre;
         this.rayon = rayon ;
     }
 
