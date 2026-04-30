@@ -2,7 +2,7 @@ package model;
 
 public class Cercle {
     
-   private  Coordonnees centre;
+    private  Coordonnees centre;
     private int rayon;
 
     //CONSTRUCTEUR////
@@ -50,13 +50,28 @@ public class Cercle {
 
     //connaitre la distance d'un point par rapport au centre 
     public double distanceAuCentre(Coordonnees p){
-        int x = p.get
+        int x = p.getX();
+        int y = p.getY();
+        
+        int dx = x - centre.getX();
+        int dy = y - centre.getY();
+        
+        return Math.sqrt(dx * dx + dy * dy);
     }
 
+    // verifie si le cercle contient un point de coordonnes P
+    //attention: on suppose ici que si le point est sur la circonference 
+    //alors il n'appartient pas au cercle ( c'est pour celà on a mis < et non <= )
     public boolean contientPoint(Coordonnees p){
+        return distanceAuCentre(p) < rayon ;
 
     }
 
+    //cette methode permet de copier le cercle actuel (je suppose qu'elle nous aidera peut être pour le future)
+    //je l'ai rajouté par intuition ( à l'équipe de voir)
+    public Cercle copie(){
+        return new Cercle(centre , rayon );
+    }
 
     
 
