@@ -19,7 +19,7 @@ public class Jeu {
 
     //// Attributs pour les joueurs
     private Joueur[] joueurs; // la liste des joueurs 
-    int currentPlayerIndex; // 0 pour le joueur 1 
+    public int currentPlayerIndex; // 0 pour le joueur 1
     
 
     private Random random;

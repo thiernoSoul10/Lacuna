@@ -36,7 +36,7 @@ public class JeuGraphique extends JComponent {
         // width = frame.getWidth();
         //  height = frame.getHeight();
 
-        this.jeu = new Jeu(660, 360, new Cercle(new Coordonnees(width / 2, height / 2), (width > height ? height : width) / 2), 12); // les dimensions du plateau de jeu pour l'affichage graphique à calculer après le chargement de l'image du plateau pour éviter les problèmes de redimensionnement
+        this.jeu = new Jeu(660, 360, new Cercle(new Coordonnees(width / 2, height / 2), (width > height ? height : width) / 2)); // les dimensions du plateau de jeu pour l'affichage graphique à calculer après le chargement de l'image du plateau pour éviter les problèmes de redimensionnement
 
         setFocusable(true);
         requestFocusInWindow();

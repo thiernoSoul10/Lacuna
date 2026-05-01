@@ -36,7 +36,7 @@ public class EcouteurDeSouris extends MouseAdapter {
             Pion newPion = new Pion(Types.TypePion.OR, new Coordonnees(newX, newY));
             this.game.placePion(newPion, new Coordonnees(newX, newY));
             this.game.getPions().add(newPion);
-            this.game.pionsjoueur1.add(newPion);
+
             this.game.currentPlayerIndex = 1; // Changer de joueur
             this.jeuGraphique.repaint(); // Redessiner le plateau après le placement du pion
         }
@@ -44,7 +44,6 @@ public class EcouteurDeSouris extends MouseAdapter {
             Pion newPion = new Pion(Types.TypePion.ARGENT, new Coordonnees(newX, newY));
             this.game.placePion(newPion, new Coordonnees(newX, newY));
             this.game.getPions().add(newPion);
-            this.game.pionsjoueur2.add(newPion);
             this.game.currentPlayerIndex = 0; // Changer de joueur
             this.jeuGraphique.repaint(); // Redessiner le plateau après le placement du pion
         }
