@@ -6,21 +6,22 @@ import java.util.Random;
 import global.Configuration;
 
 public class Jeu {
-    private Cercle cercleDeJeu ;  // le cercle du jeu
-    private ArrayList<Pion> pions; //contient tous les pions actuel  dans le cercle
-    private ArrayList<Fleur> fleurs; 
+    private Cercle cercleDeJeu; // le cercle du jeu
+    private ArrayList<Pion> pions; // contient tous les pions actuel dans le cercle
+    private ArrayList<Fleur> fleurs;
+    private Fleur fleurSelectionnee1; // la fleur que le joueur a touché ( pour le moment on suppose que c'est la
+                                      // fleur la plus proche du point de clic )
+    private Fleur fleurSelectionnee2; // la fleur que le joueur a touché ( pour le moment on suppose que c'est la
+                                      // fleur la plus proche du point de clic )
+    int nbPions = 12; // nombre de pions
+    int nbFleurs = 49; // nombre de fleurs
 
-    int nbPions = 12 ; // nombre de pions
-    int nbFleurs = 49 ; // nombre de fleurs 
-
-    private static final double DIST_MIN_FLEURS = 20; // distance min entre les fleurs 
-    private static final int  NB_JOUEURS = 2; 
-    
+    private static final double DIST_MIN_FLEURS = 20; // distance min entre les fleurs
+    private static final int NB_JOUEURS = 2;
 
     //// Attributs pour les joueurs
-    private Joueur[] joueurs; // la liste des joueurs 
+    private Joueur[] joueurs; // la liste des joueurs
     public int currentPlayerIndex; // 0 pour le joueur 1
-    
 
     private Random random;
 
@@ -29,7 +30,7 @@ public class Jeu {
 
     public boolean againstIA = false;
 
-   ////// CONSTRUCTEUR //////////////////////////////
+    ////// CONSTRUCTEUR //////////////////////////////
 
     public Jeu(int WIDTH, int HEIGHT, Cercle cercleDeJeu) {
 
@@ -45,7 +46,7 @@ public class Jeu {
 
         this.WIDTH = WIDTH;
         this.HEIGHT = HEIGHT;
-    
+
         random = new Random();
 
         initPlayers();
@@ -55,7 +56,8 @@ public class Jeu {
         System.out.println("Game created");
     }
 
-    ////////////////////////////////////GETTERS ET SETTERS METHODES /////////////////////////////////////////
+    //////////////////////////////////// GETTERS ET SETTERS METHODES
+    //////////////////////////////////// /////////////////////////////////////////
 
     public Cercle getCercleDeJeu() {
         return cercleDeJeu;
@@ -68,23 +70,24 @@ public class Jeu {
     public ArrayList<Fleur> getFleurs() {
         return fleurs;
     }
-    public int getNbPions(){
+
+    public int getNbPions() {
         return nbPions;
     }
 
-    public int getNbFleurs(){
+    public int getNbFleurs() {
         return nbFleurs;
     }
 
-    public int getNbJoueurs(){
+    public int getNbJoueurs() {
         return NB_JOUEURS;
     }
 
-    public Joueur[] getJoueurs(){
+    public Joueur[] getJoueurs() {
         return joueurs;
     }
 
-    public Joueur getJoueurActuel(){
+    public Joueur getJoueurActuel() {
         return joueurs[currentPlayerIndex];
     }
 
@@ -92,27 +95,27 @@ public class Jeu {
         currentPlayerIndex = (currentPlayerIndex + 1) % NB_JOUEURS;
     }
 
-    public boolean isAgainstIA(){
+    public boolean isAgainstIA() {
         return againstIA;
     }
 
     private void initPlayers() {
         if (isAgainstIA()) {
             joueurs = new Joueur[] {
-                new JoueurHumain("HUMAN", Types.TypePion.OR),
-                new JoueurIa("IA", Types.TypePion.ARGENT)
+                    new JoueurHumain("HUMAN", Types.TypePion.OR),
+                    new JoueurIa("IA", Types.TypePion.ARGENT)
             };
             currentPlayerIndex = 0;
         } else {
             joueurs = new Joueur[] {
-                new JoueurHumain("Joueur 1", Types.TypePion.OR),
-                new JoueurHumain("Joueur 2", Types.TypePion.ARGENT)
+                    new JoueurHumain("Joueur 1", Types.TypePion.OR),
+                    new JoueurHumain("Joueur 2", Types.TypePion.ARGENT)
             };
             currentPlayerIndex = random.nextInt(getNbJoueurs());
         }
     }
 
-    //////////////////initialisatin des fleurs////////////////////////////////////
+    ////////////////// initialisatin des fleurs////////////////////////////////////
     public void initFleurs() {
         fleurs.clear();
 
@@ -123,7 +126,7 @@ public class Jeu {
             }
         }
     }
-    
+
     public void initPions() {
         pions.clear();
 
@@ -153,7 +156,7 @@ public class Jeu {
     }
 
     private boolean positionValide(Coordonnees pos, ArrayList<Fleur> fleurs) {
-        for(Fleur f : fleurs) {
+        for (Fleur f : fleurs) {
             if (distance(pos, f.getPosition()) < DIST_MIN_FLEURS) {
                 return false;
             }
@@ -168,20 +171,22 @@ public class Jeu {
     }
 
     //////////////// FONCTIONS POUR LES REGLES DU JEU ///////////////
-    ///////////// les 3 premieres fonctions sont les principales pour le jeu///////////
+    ///////////// les 3 premieres fonctions sont les principales pour le
+    //////////////// jeu///////////
 
     // l'avantage du premier joueur au tout debut
     public void avantagePremierJoueur() {
         Joueur joueur = getJoueurActuel();
 
-        if (fleurs.isEmpty()) return; //on va verifier la liste des fleurs 
+        if (fleurs.isEmpty())
+            return; // on va verifier la liste des fleurs
 
         Fleur f = fleurs.get(random.nextInt(fleurs.size()));
         joueur.ajouterFleur(f);
         fleurs.remove(f);
     }
 
-     // pour placer un pion dans le cercle de jeu 
+    // pour placer un pion dans le cercle de jeu
     public boolean placePion(Pion pion, Coordonnees pos) {
 
         if (!cercleDeJeu.contientPoint(pos)) {
@@ -190,7 +195,7 @@ public class Jeu {
         }
 
         if (!positionLibrePourPion(pos)) {
-            System.out.println("POSITION OCCUPEE");
+            System.out.println("POSITION NON APPROPRIEE : " + pos.getX() + ", " + pos.getY());
             return false;
         }
 
@@ -198,39 +203,39 @@ public class Jeu {
         return true;
     }
 
-    //pour jouer un coup (controller appelle ça )
-    public void jouerCoup(Joueur joueur, Pion pion, Coordonnees pos, Fleur f1, Fleur f2){
-        
-        if (!placePion(pion, pos)) return ;
-        
+    // pour jouer un coup (controller appelle ça )
+    public void jouerCoup(Joueur joueur, Pion pion, Coordonnees pos, Fleur f1, Fleur f2) {
+
+        if (!placePion(pion, pos))
+            return;
+
         if (!mangerFleurs(joueur, f1, f2)) {
-            pion.setPosition(null); //on remet la position à null (car si on a passé la premiere condition, la position n'est pas null)
-            return ;
+            pion.setPosition(null); // on remet la position à null (car si on a passé la premiere condition, la
+                                    // position n'est pas null)
+            return;
         }
-        
-        //si tous les pions sont placés
-        if(tousLesPionsPlaces()){
-             attribuerFleursRestantes();// on attribue les fleurs restantes 
-             return ; //fin du jeu
+
+        // si tous les pions sont placés
+        if (tousLesPionsPlaces()) {
+            attribuerFleursRestantes();// on attribue les fleurs restantes
+            return; // fin du jeu
         }
-        
-         joueurSuivant();// passons au joueur suivant
-       
+
+        joueurSuivant();// passons au joueur suivant
+
     }
 
-
-    /*============= fonctions auxiliares =================*/
-
+    /* ============= fonctions auxiliares ================= */
 
     // on verifie si la position où on place le pion est libre
     private boolean positionLibrePourPion(Coordonnees pos) {
-        //on verifie qu'il y a une distance avec toutes les fleurs
-        for (Fleur f : fleurs) {
+        // on verifie qu'il y a une distance avec toutes les fleurs
+      /*   for (Fleur f : fleurs) {
             if (distance(pos, f.getPosition()) < DIST_MIN_FLEURS) {
                 return false;
             }
-        }
-        //on verifie qu'il y a une distance aussi avec les pions
+        } */
+        // on verifie qu'il y a une distance aussi avec les pions
         for (Pion p : pions) {
             if (p.getPosition() != null && distance(pos, p.getPosition()) < DIST_MIN_FLEURS) {
                 return false;
@@ -240,28 +245,29 @@ public class Jeu {
         return true;
     }
 
-   
-    // pour savoir si le joueur mange les fleurs  ( mange et renvoie vrai si oui) 
+    // pour savoir si le joueur mange les fleurs ( mange et renvoie vrai si oui)
     public boolean mangerFleurs(Joueur joueur, Fleur f1, Fleur f2) {
-        //on verifie les type d'abord
-        if (f1.getType() != f2.getType()) return false; 
+        // on verifie les type d'abord
+        if (f1.getType() != f2.getType())
+            return false;
         // s'assrere que les fleurs sont dans le plateau (robustesse)
-        if (!fleurs.contains(f1) || !fleurs.contains(f2)) return false;
-        
-        //le joueur mange les 2 fleurs
+        if (!fleurs.contains(f1) || !fleurs.contains(f2))
+            return false;
+
+        // le joueur mange les 2 fleurs
         joueur.ajouterFleur(f1);
         joueur.ajouterFleur(f2);
-        // les fleurs ne font plus partie du plateau 
+        // les fleurs ne font plus partie du plateau
         fleurs.remove(f1);
         fleurs.remove(f2);
 
         return true;
     }
 
-    
-
-    //attribuer les fleurs restantes ( après avoir jouer , il se peut que le joueur suivant ai 2 fleurs)
-    // qui sont proche de lui, car des obstacles ont disparus sur le plateau, si on peut dire comme ça )
+    // attribuer les fleurs restantes ( après avoir jouer , il se peut que le joueur
+    // suivant ai 2 fleurs)
+    // qui sont proche de lui, car des obstacles ont disparus sur le plateau, si on
+    // peut dire comme ça )
     public void attribuerFleursRestantes() {
 
         ArrayList<Fleur> copie = new ArrayList<>(fleurs);
@@ -275,7 +281,7 @@ public class Jeu {
         }
     }
 
-    //le joueur le plus proche 
+    // le joueur le plus proche
     private Joueur joueurLePlusProche(Fleur fleur) {
 
         Pion meilleur = null;
@@ -290,7 +296,8 @@ public class Jeu {
             }
         }
 
-        if (meilleur == null) return null; // pas de joueur plus proche alors
+        if (meilleur == null)
+            return null; // pas de joueur plus proche alors
 
         for (Joueur j : joueurs) {
             if (j.getTypePion() == meilleur.getType()) {
@@ -301,24 +308,25 @@ public class Jeu {
         return null;
     }
 
-    private boolean tousLesPionsPlaces(){
-        return pions.size() == 0; 
+    private boolean tousLesPionsPlaces() {
+        return pions.size() == 0;
     }
 
-    //////////////////////////////pour l'affichage ////////////////////////////////////////
+    ////////////////////////////// pour l'affichage
+    ////////////////////////////// ////////////////////////////////////////
     public void afficher() {
         Configuration.debugeur("Affichage du jeu : \n#");
-        for(int i = 0; i < WIDTH; i++) {
+        for (int i = 0; i < WIDTH; i++) {
             Configuration.debugeur("-");
         }
         Configuration.debugeur("#\n");
 
-        for(int y = 0; y < HEIGHT; y++) {
+        for (int y = 0; y < HEIGHT; y++) {
             Configuration.debugeur("|");
-            for(int x = 0; x < WIDTH; x++) {
+            for (int x = 0; x < WIDTH; x++) {
                 Coordonnees position = new Coordonnees(x, y);
                 char symbole = ' ';
-                
+
                 for (Pion pion : pions) {
                     if (pion.getPosition() != null && pion.getPosition().equals(position)) {
                         symbole = pion.typePionToChar();
@@ -341,9 +349,160 @@ public class Jeu {
         }
 
         Configuration.debugeur("#");
-        for(int i = 0; i < WIDTH; i++) {
+        for (int i = 0; i < WIDTH; i++) {
             Configuration.debugeur("-");
         }
         Configuration.debugeur("#\n");
     }
+
+    public boolean toucherFleur(Coordonnees pos) {
+        for (Fleur f : fleurs) {
+
+            if (distance(pos, f.getPosition()) < 10) {
+
+                if (f == fleurSelectionnee1) {
+                    fleurSelectionnee1 = null;
+                    return true;
+                }
+
+                if (f == fleurSelectionnee2) {
+                    fleurSelectionnee2 = null;
+                    return true;
+                }
+
+                if (fleurSelectionnee1 == null) {
+                    fleurSelectionnee1 = f;
+                    return true;
+                }
+
+                if (fleurSelectionnee2 == null) {
+                    fleurSelectionnee2 = f;
+                    return true;
+                }
+
+                fleurSelectionnee1 = f;
+                fleurSelectionnee2 = null;
+
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean surSegment(Coordonnees A, Coordonnees B, Coordonnees C) {
+
+        int x1 = A.getX();
+        int y1 = A.getY();
+        int x2 = B.getX();
+        int y2 = B.getY();
+        int x = C.getX();
+        int y = C.getY();
+
+        // 1. alignement (produit vectoriel)
+        int det = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1);
+
+        if (Math.abs(det) > 5)
+            return false; // tolérance
+
+        // 2. vérifier que C est entre A et B
+        boolean entreX = (x >= Math.min(x1, x2) && x <= Math.max(x1, x2));
+        boolean entreY = (y >= Math.min(y1, y2) && y <= Math.max(y1, y2));
+
+        return entreX && entreY;
+    }
+
+    private boolean segmentLibre(Coordonnees A, Coordonnees B) {
+
+        for (Fleur f : fleurs) {
+
+            Coordonnees C = f.getPosition();
+
+            // ignorer les extrémités
+            if (C.equals(A) || C.equals(B))
+                continue;
+
+            if (surSegment(A, B, C)) {
+                return false; // obstacle trouvé
+            }
+        }
+
+        return true;
+    }
+
+    public boolean fleursConnectées(Fleur f1, Fleur f2) {
+
+        if (f1 == null || f2 == null)
+            return false;
+
+        if (f1.getType() != f2.getType())
+            return false;
+
+        Coordonnees A = f1.getPosition();
+        Coordonnees B = f2.getPosition();
+
+        return segmentLibre(A, B);
+    }
+
+    public Coordonnees milieu(Coordonnees A, Coordonnees B) {
+
+        int x = (A.getX() + B.getX()) / 2;
+        int y = (A.getY() + B.getY()) / 2;
+
+        return new Coordonnees(x, y);
+    }
+
+    public Fleur getFleurSelectionnee1() {
+        return fleurSelectionnee1;
+    }
+
+    public Fleur getFleurSelectionnee2() {
+        return fleurSelectionnee2;
+    }
+
+    public void resetFleursSelectionnee1() {
+        fleurSelectionnee1 = null;
+
+    }
+
+    public void resetFleursSelectionnee2() {
+        fleurSelectionnee2 = null;
+
+    }
+
+    /*
+     * public Fleur getFleurProche(Coordonnees pos, double distanceMax) {
+     * Fleur best = null;
+     * double min = Double.MAX_VALUE;
+     * 
+     * for (Fleur f : fleurs) {
+     * double d = distance(pos, f.getPosition());
+     * if (d < min && d < distanceMax) {
+     * min = d;
+     * best = f;
+     * }
+     * }
+     * return best;
+     * }
+     * 
+     * public Fleur getFleurAlignee(Fleur ref) {
+     * 
+     * for (Fleur f : fleurs) {
+     * 
+     * if (f == ref)
+     * continue;
+     * if (f.getType() != ref.getType())
+     * continue;
+     * 
+     * int dx = Math.abs(f.getPosition().getX() - ref.getPosition().getX());
+     * int dy = Math.abs(f.getPosition().getY() - ref.getPosition().getY());
+     * 
+     * // horizontal OU vertical
+     * if (dx < 15 || dy < 15) {
+     * return f;
+     * }
+     * }
+     * 
+     * return null;
+     * }
+     */
 }

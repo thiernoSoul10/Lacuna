@@ -5,9 +5,10 @@ import java.awt.event.MouseEvent;
 
 import view.JeuGraphique;
 import model.*;
+
 public class EcouteurDeSouris extends MouseAdapter {
-        private Jeu game ;
-        private JeuGraphique jeuGraphique;
+    private Jeu game;
+    private JeuGraphique jeuGraphique;
 
     public EcouteurDeSouris(JeuGraphique jeuGraphique) {
         this.game = jeuGraphique.jeu;
@@ -17,36 +18,82 @@ public class EcouteurDeSouris extends MouseAdapter {
 
     @Override
     public void mousePressed(MouseEvent e) {
+
         int x = e.getX();
         int y = e.getY();
 
-        double nx = (double)x / jeuGraphique.getWidth();
-        double ny = (double)y / jeuGraphique.getHeight();
+        // Convertir les coordonnées écran en coordonnées modèle
+        Coordonnees modelPos = jeuGraphique.screenToModel(x, y);
 
-        // récupération cercle
-        int cx = game.getCercleDeJeu().getCentre().getX();
-        int cy = game.getCercleDeJeu().getCentre().getY();
-        int r  = game.getCercleDeJeu().getRayon();
+        System.out.println(
+                "Clic écran: (" + x + ", " + y + ") -> Modèle: (" + modelPos.getX() + ", " + modelPos.getY() + ")");
 
-        // conversion des coordonnées normalisées en coordonnées du jeu
-        int newX = (int)(cx - r + nx * 2 * r);
-        int newY = (int)(cy - r + ny * 2 * r);
-
-        if(this.game.currentPlayerIndex == 0){
-            Pion newPion = new Pion(Types.TypePion.OR, new Coordonnees(newX, newY));
-            this.game.placePion(newPion, new Coordonnees(newX, newY));
-            this.game.getPions().add(newPion);
-
-            this.game.currentPlayerIndex = 1; // Changer de joueur
-            this.jeuGraphique.repaint(); // Redessiner le plateau après le placement du pion
+        // vérifie si dans le cercle (en utilisant le modèle)
+        if (!game.getCercleDeJeu().contientPoint(modelPos)) {
+            System.out.println("Clic en dehors du cercle modèle");
+            return;
         }
-        else {
-            Pion newPion = new Pion(Types.TypePion.ARGENT, new Coordonnees(newX, newY));
-            this.game.placePion(newPion, new Coordonnees(newX, newY));
-            this.game.getPions().add(newPion);
-            this.game.currentPlayerIndex = 0; // Changer de joueur
-            this.jeuGraphique.repaint(); // Redessiner le plateau après le placement du pion
+        if (game.toucherFleur(modelPos)) {
+            System.out.println("Clic sur une fleur !");
+            jeuGraphique.repaint();
+
+            return;
         }
+        if (game.toucherFleur(modelPos)) {
+            jeuGraphique.repaint();
+            return;
+        }
+
         
+        if (game.fleursConnectées(game.getFleurSelectionnee1(), game.getFleurSelectionnee2())) {
+
+            Coordonnees pos = game.milieu(
+                    game.getFleurSelectionnee1().getPosition(),
+                    game.getFleurSelectionnee2().getPosition());
+
+            Pion newPion;
+
+            if (this.game.currentPlayerIndex == 0) {
+                newPion = new Pion(Types.TypePion.OR, pos);
+                this.game.currentPlayerIndex = 1;
+            } else {
+                newPion = new Pion(Types.TypePion.ARGENT, pos);
+                this.game.currentPlayerIndex = 0;
+            }
+
+            if (this.game.placePion(newPion, pos)) {
+                this.game.getPions().add(newPion);
+
+                // reset sélection après coup
+                game.resetFleursSelectionnee1();
+                game.resetFleursSelectionnee2();
+
+                this.jeuGraphique.repaint();
+            }
+        }
     }
+
+    /*
+     * @Override
+     * public void mouseMoved(MouseEvent e) {
+     * int x = e.getX();
+     * int y = e.getY();
+     * 
+     * System.out.println("Souris déplacée: (" + x + ", " + y + ")");
+     * // Convertir les coordonnées écran en coordonnées modèle
+     * Coordonnees modelPos = jeuGraphique.screenToModel(x, y);
+     * 
+     * 
+     * 
+     * Fleur f1 = game.getFleurProche(modelPos, 20);
+     * 
+     * if (f1 == null)
+     * return;
+     * 
+     * Fleur f2 = game.getFleurAlignee(f1);
+     * if (f2 != null) {
+     * System.out.println("TRAIT POSSIBLE ENTRE " + f1 + " et " + f2);
+     * }
+     * }
+     */
 }

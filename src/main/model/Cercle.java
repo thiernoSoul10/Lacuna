@@ -4,6 +4,7 @@ public class Cercle {
     
     private  Coordonnees centre;
     private int rayon;
+    double echelle = 0.5; // échelle de 1:1 par défaut   
 
     //CONSTRUCTEUR////
 
@@ -55,7 +56,7 @@ public class Cercle {
         
         int dx = x - centre.getX();
         int dy = y - centre.getY();
-        
+        System.out.println("Distance au centre: " + Math.sqrt(dx * dx + dy * dy));
         return Math.sqrt(dx * dx + dy * dy);
     }
 
@@ -63,8 +64,7 @@ public class Cercle {
     //attention: on suppose ici que si le point est sur la circonference 
     //alors il n'appartient pas au cercle ( c'est pour celà on a mis < et non <= )
     public boolean contientPoint(Coordonnees p){
-        return distanceAuCentre(p) < rayon ;
-
+        return distanceAuCentre(p) <= rayon ;
     }
 
     //cette methode permet de copier le cercle actuel (je suppose qu'elle nous aidera peut être pour le future)
