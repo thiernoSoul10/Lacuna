@@ -140,11 +140,11 @@ public class Jeu {
 
         do {
             double angle = Math.random() * 2 * Math.PI;
-            double r = Math.sqrt(Math.random()) * cercleDeJeu.getRayon();
+            double margeFleur = 20; // pour ne pas déborder
+            double r = Math.sqrt(Math.random()) * (cercleDeJeu.getRayon() - margeFleur);
 
-            double x = cercleDeJeu.getCentre().getX() + r * Math.cos(angle);
-            double y = cercleDeJeu.getCentre().getY() + r * Math.sin(angle);
-
+            double x = cercleDeJeu.getCentre().getX() + r * Math.cos(angle); 
+            double y = cercleDeJeu.getCentre().getY() + r * Math.sin(angle); 
             pos = new Coordonnees((int) x, (int) y);
 
         } while (!positionValide(pos, fleurs));

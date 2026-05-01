@@ -36,7 +36,11 @@ public class JeuGraphique extends JComponent {
         // width = frame.getWidth();
         //  height = frame.getHeight();
 
-        this.jeu = new Jeu(660, 360, new Cercle(new Coordonnees(width / 2, height / 2), (width > height ? height : width) / 2)); // les dimensions du plateau de jeu pour l'affichage graphique à calculer après le chargement de l'image du plateau pour éviter les problèmes de redimensionnement
+        int boardSize = Math.min(width, height); 
+        int cx = width / 2;                      
+        int cy = height / 2;                     
+        int rayon = (int)(boardSize * 0.30);     
+        this.jeu = new Jeu(660, 360, new Cercle(new Coordonnees(cx, cy), rayon));
 
         setFocusable(true);
         requestFocusInWindow();
@@ -171,10 +175,15 @@ public class JeuGraphique extends JComponent {
                     default: break;
                 }
                 if (img != null) {
-                    double relX = (fleur.getPosition().x / 660.0) - 0.5;
-                    double relY = (fleur.getPosition().y / 360.0) - 0.5;
-                    int x = (int)(centerX + relX * 2 * rayonMax);
-                    int y = (int)(centerY + relY * 2 * rayonMax);
+                    double rayon = jeu.getCercleDeJeu().getRayon(); 
+                    double cx = jeu.getCercleDeJeu().getCentre().getX(); 
+                    double cy = jeu.getCercleDeJeu().getCentre().getY(); 
+
+                    // Pour les fleurs :
+                    double relX = (fleur.getPosition().x - cx) / rayon;
+                    double relY = (fleur.getPosition().y - cy) / rayon;
+                    int x = (int)(centerX + relX * rayonMax);
+                    int y = (int)(centerY + relY * rayonMax);
                     g.drawImage(img, x - taille/2, y - taille/2, taille, taille, null);
                 }
             }
@@ -192,10 +201,13 @@ public class JeuGraphique extends JComponent {
                 default: break;
             }
             if (img != null) {
-                double relX = (pion.getPosition().x / 660.0) - 0.5;
-                double relY = (pion.getPosition().y / 360.0) - 0.5;
-                int x = (int)(centerX + relX * 2 * rayonMax);
-                int y = (int)(centerY + relY * 2 * rayonMax);
+                double cx = jeu.getCercleDeJeu().getCentre().getX();
+                double cy = jeu.getCercleDeJeu().getCentre().getY();
+                double rayon = jeu.getCercleDeJeu().getRayon();
+                double relX = (pion.getPosition().x - cx) / rayon;
+                double relY = (pion.getPosition().y - cy) / rayon;
+                int x = (int)(centerX + relX * rayonMax);
+                int y = (int)(centerY + relY * rayonMax);
                 g.drawImage(img, x - taille/2, y - taille/2, taille, taille, null);
             }
         }

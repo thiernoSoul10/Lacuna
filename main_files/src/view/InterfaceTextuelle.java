@@ -14,7 +14,7 @@ public class InterfaceTextuelle {
     public void lancer() {
         Configuration.debugeur("Interface textuelle lancée !\n");
 
-        Jeu jeu = new Jeu(50, 30,new Cercle(new Coordonnees(660 / 2, 360 / 2),(660 > 360 ? 360 : 660) / 2));
+        Jeu jeu = new Jeu(50, 30, new Cercle(new Coordonnees(25, 15), 15));
         jeu.afficher();
 
         jeu.placePion(new Pion(OR,new Coordonnees(5,5)),new Coordonnees(5,5));
