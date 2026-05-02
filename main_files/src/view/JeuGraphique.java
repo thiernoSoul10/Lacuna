@@ -6,10 +6,13 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
+import java.awt.BorderLayout;
 import java.awt.RenderingHints;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JButton;
 
 import global.Configuration;
 import model.Cercle;
@@ -24,6 +27,9 @@ public class JeuGraphique extends JComponent {
     private JFrame frame;
     public Jeu jeu;
     private int width = 660, height = 360;
+    private JButton undoButton;
+    private JButton redoButton;
+    private JButton resetButton;
 
     // les images des fleurs et des pions seront chargées dans le constructeur de
     // l'interface graphique
@@ -42,6 +48,17 @@ public class JeuGraphique extends JComponent {
         setFocusable(true);
         requestFocusInWindow();
         mouse = new EcouteurDeSouris(this);
+
+        undoButton = new JButton("Undo");
+        redoButton = new JButton("Redo");
+        resetButton = new JButton("Reset");
+        
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(undoButton);
+        buttonPanel.add(redoButton);
+        buttonPanel.add(resetButton);
+
 
         try {
             // Chargement des images des fleurs
@@ -67,7 +84,9 @@ public class JeuGraphique extends JComponent {
         // Aucun pion placé au démarrage : les pions seront ajoutés par le joueur en jeu.
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
-
+        frame.setLayout(new BorderLayout());
+        frame.add(buttonPanel, BorderLayout.NORTH);
+        frame.add(this, BorderLayout.CENTER);
     }
 
     public Coordonnees screenToModel(int screenX, int screenY) {

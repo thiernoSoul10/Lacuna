@@ -2,6 +2,7 @@ package model;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Stack;
 
 import global.Configuration;
 
@@ -30,6 +31,22 @@ public class Jeu {
     private int HEIGHT = 30;
 
     public boolean againstIA = false;
+
+    // pour l'undo redo
+    public Stack<ActionJeu> undoStack = new Stack<>();
+    public Stack<ActionJeu> redoStack = new Stack<ActionJeu>();
+
+    class ActionJeu {// pour l'undo redo
+        Pion pion;
+        Fleur f1;
+        Fleur f2;
+
+        public ActionJeu(Pion pion, Fleur f1, Fleur f2) {
+            this.pion = pion;
+            this.f1 = f1;
+            this.f2 = f2;
+        }
+    }
 
 
     public Jeu(int WIDTH, int HEIGHT, Cercle cercleDeJeu) {
