@@ -64,10 +64,7 @@ public class JeuGraphique extends JComponent {
             System.exit(3);
         }
 
-        jeu.placePion(jeu.getPions().get(0), new Coordonnees(330, 180));
-        jeu.placePion(jeu.getPions().get(1), new Coordonnees(330, 250));
-
-        // frame.add(this); // Already added in InterfaceGraphique
+        // Aucun pion placé au démarrage : les pions seront ajoutés par le joueur en jeu.
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
 

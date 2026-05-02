@@ -18,6 +18,7 @@ public class Jeu {
 
     private static final double DIST_MIN_FLEURS = 20; // distance min entre les fleurs
     private static final int NB_JOUEURS = 2;
+    private static final int MAX_PIONS_PAR_JOUEUR = 6;
 
     //// Attributs pour les joueurs
     private Joueur[] joueurs; // la liste des joueurs
@@ -30,7 +31,6 @@ public class Jeu {
 
     public boolean againstIA = false;
 
-    ////// CONSTRUCTEUR //////////////////////////////
 
     public Jeu(int WIDTH, int HEIGHT, Cercle cercleDeJeu) {
 
@@ -126,16 +126,30 @@ public class Jeu {
             }
         }
     }
-
+    
     public void initPions() {
         pions.clear();
 
         for (Types.TypePion type : Types.TypePion.values()) {
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < MAX_PIONS_PAR_JOUEUR; i++) {
                 Coordonnees pos = null;
                 pions.add(new Pion(type, pos));
             }
         }
+    }
+
+    private int nombreDePionsPlacees(Types.TypePion type) {
+        int compteur = 0;
+        for (Pion p : pions) {
+            if (p.getType() == type && p.getPosition() != null) {
+                compteur++;
+            }
+        }
+        return compteur;
+    }
+
+    private boolean peutPlacerPionDeType(Types.TypePion type) {
+        return nombreDePionsPlacees(type) < MAX_PIONS_PAR_JOUEUR;
     }
 
     private Coordonnees genererPositionAleatoire(ArrayList<Fleur> fleurs) {
@@ -188,6 +202,11 @@ public class Jeu {
 
     // pour placer un pion dans le cercle de jeu
     public boolean placePion(Pion pion, Coordonnees pos) {
+
+        if (!peutPlacerPionDeType(pion.getType())) {
+            System.out.println("IMPOSSIBLE DE PLACER PLUS DE " + MAX_PIONS_PAR_JOUEUR + " PIONS DE CE TYPE : " + pion.getType());
+            return false;
+        }
 
         if (!cercleDeJeu.contientPoint(pos)) {
             System.out.println("PION HORS DU CERCLE : " + pos.getX() + ", " + pos.getY());
