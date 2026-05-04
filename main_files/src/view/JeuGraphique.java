@@ -171,16 +171,26 @@ public class JeuGraphique extends JComponent {
     }
 
     public void paintComponent(Graphics g) {
-        ArrayList<Pion> pions = jeu.getPions();
-        ArrayList<Fleur> fleurs = jeu.getFleurs();
-        g.setColor(getBackground());
-        g.fillRect(0, 0, getWidth(), getHeight());
-
         int componentWidth = getWidth();
         int componentHeight = getHeight();
 
         int boardSize = Math.min(componentWidth, componentHeight);
-        int taille = (int) (boardSize * 0.05); // taille des fleures relative à la taille du plateau
+        int taille = (int) (boardSize * 0.05); // taille des fleures relative à la taille du plateau (5% du plateau)
+        
+        // envoyer au modele la marge des fleurs
+        jeu.setMarge( (double) (taille / 2) );
+        
+        //recupérer la liste des pions et des fleurs 
+        
+        ArrayList<Pion> pions = jeu.getPions();
+        ArrayList<Fleur> fleurs = jeu.getFleurs();
+        /////////////////////////////////////
+
+        g.setColor(getBackground());
+        g.fillRect(0, 0, getWidth(), getHeight());
+
+       
+        
         int xOffset = (componentWidth - boardSize) / 2;
         int yOffset = (componentHeight - boardSize) / 2;
 

@@ -28,10 +28,19 @@ public class Jeu {
 
     private Random random;
 
+
     private int WIDTH = 30;
     private int HEIGHT = 30;
 
     public boolean againstIA = false;
+
+    ///////// pour la marge (afin que les fleurs ne sortent pas du cercle)//////////
+    ////////// vu qu'on dessine les fleurs avec le format dans view (hauteur * largeur )
+    ///////// avec hauteur == largeur, alors la view va nous envoyer la taille qu'on divisera par 2
+    ///////// voir dans jeuGraphique, juste après rcalcul de la taille, on fera setMarge(taille/2)
+    
+    private double marge;
+
 
     // pour l'undo redo
     public Stack<ActionJeu> undoStack = new Stack<>();
@@ -81,6 +90,9 @@ public class Jeu {
 
     //////////////////////////////////// GETTERS ET SETTERS METHODES
     //////////////////////////////////// /////////////////////////////////////////
+    public void setMarge(double marge){
+        this.marge = marge;
+    }
 
     public Cercle getCercleDeJeu() {
         return cercleDeJeu;
@@ -183,8 +195,8 @@ public class Jeu {
 
         do {
             double angle = Math.random() * 2 * Math.PI;
-            double margeFleur = 20; // pour ne pas déborder
-            double r = Math.sqrt(Math.random()) * (cercleDeJeu.getRayon() - margeFleur);
+            double margeFleur = marge ; // pour ne pas déborder
+            double r = Math.sqrt(Math.random()) * (cercleDeJeu.getRayon()-margeFleur);
 
             double x = cercleDeJeu.getCentre().getX() + r * Math.cos(angle);
             double y = cercleDeJeu.getCentre().getY() + r * Math.sin(angle);
@@ -557,7 +569,6 @@ public class Jeu {
 
         return map;
     }
-    
     public void undo(){
         if(!this.undoStack.isEmpty()){
             ActionJeu action = this.undoStack.pop();

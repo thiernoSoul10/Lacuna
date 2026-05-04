@@ -4,7 +4,7 @@ public class Cercle {
     
     private  Coordonnees centre;
     private int rayon;
-    double echelle = 0.5; // échelle    
+    //double echelle = 0.5; // échelle    
 
     //CONSTRUCTEUR////
 
