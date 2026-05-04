@@ -138,7 +138,7 @@ public class Jeu {
         }
     }
 
-    ////////////////// initialisatin des fleurs////////////////////////////////////
+    ////////////////// initialisatin des fleurs et pions////////////////////////////////////
     public void initFleurs() {
         fleurs.clear();
 
@@ -161,6 +161,7 @@ public class Jeu {
         }
     }
 
+    // Le nombre de pions par type placés dans le cercle 
     private int nombreDePionsPlacees(Types.TypePion type) {
         int compteur = 0;
         for (Pion p : pions) {
@@ -171,10 +172,12 @@ public class Jeu {
         return compteur;
     }
 
+    // si on peut placer un pion d'un certain type(or ou argent) dans le cercle
     private boolean peutPlacerPionDeType(Types.TypePion type) {
         return nombreDePionsPlacees(type) < MAX_PIONS_PAR_JOUEUR;
     }
 
+    // Génération de position aleatoire pour les fleurs
     private Coordonnees genererPositionAleatoire(ArrayList<Fleur> fleurs) {
         Coordonnees pos;
 
@@ -192,6 +195,7 @@ public class Jeu {
         return pos;
     }
 
+    // Si la position pour mettre les fleurs est valide
     private boolean positionValide(Coordonnees pos, ArrayList<Fleur> fleurs) {
         for (Fleur f : fleurs) {
             if (distance(pos, f.getPosition()) < DIST_MIN_FLEURS) {
@@ -201,6 +205,7 @@ public class Jeu {
         return true;
     }
 
+    // dist entre deux points de coordonnes 
     private double distance(Coordonnees a, Coordonnees b) {
         double dx = a.getX() - b.getX();
         double dy = a.getY() - b.getY();
@@ -309,7 +314,7 @@ public class Jeu {
         return true;
     }
 
-    // attribuer les fleurs restantes ( après avoir jouer , il se peut que le joueur
+    // attribuer les fleurs restantes ( après avoir joué , il se peut que le joueur
     // suivant ai 2 fleurs)
     // qui sont proche de lui, car des obstacles ont disparus sur le plateau, si on
     // peut dire comme ça )
@@ -353,8 +358,13 @@ public class Jeu {
         return null;
     }
 
+    // verifie si tous les pions sont placés (type argent et or )
     private boolean tousLesPionsPlaces() {
-        return pions.size() == 0;
+        for (Pion p : pions){
+            // le pion n'a pas de coordonnée, donc il n'est pas placé dans le plateau de jeu
+            if(p.getPosition()==null) return false ;
+        }
+        return true;
     }
 
     ////////////////////////////// pour l'affichage
@@ -535,18 +545,19 @@ public class Jeu {
 
     public Map<Types.TypeFleur, Integer> getScore(Joueur joueur) {
 
-    Map<Types.TypeFleur, Integer> map = new java.util.HashMap<>();
+        Map<Types.TypeFleur, Integer> map = new java.util.HashMap<>();
 
-    for (Types.TypeFleur t : Types.TypeFleur.values()) {
-        map.put(t, 0);
+        for (Types.TypeFleur t : Types.TypeFleur.values()) {
+            map.put(t, 0);
+        }
+
+        for (Fleur f : joueur.getFleursGagnees()) {
+            map.put(f.getType(), map.get(f.getType()) + 1);
+        }
+
+        return map;
     }
-
-    for (Fleur f : joueur.getFleursGagnees()) {
-        map.put(f.getType(), map.get(f.getType()) + 1);
-    }
-
-    return map;
-}
+    
     public void undo(){
         if(!this.undoStack.isEmpty()){
             ActionJeu action = this.undoStack.pop();
