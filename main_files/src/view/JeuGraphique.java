@@ -6,10 +6,12 @@ import java.awt.Image;
 import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.BasicStroke;
-import java.awt.RenderingHints;
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+import org.w3c.dom.events.MouseEvent;
 
 import global.Configuration;
 import model.Cercle;
@@ -25,6 +27,9 @@ public class JeuGraphique extends JComponent {
     public Jeu jeu;
     private int width = 660, height = 360;
 
+    private Score scoreArgent, scoreOr;
+    private JLabel scoreLabel;
+
     // les images des fleurs et des pions seront chargées dans le constructeur de
     // l'interface graphique
     private Image rougeImg, bleueImg, jauneImg, verteImg, orangeImg, violetteImg, roseImg;
@@ -33,8 +38,11 @@ public class JeuGraphique extends JComponent {
 
     private EcouteurDeSouris mouse;
 
-    public JeuGraphique(JFrame frame) {
+    public JeuGraphique(JFrame frame, Score scoreArgent, Score scoreOr, JLabel scoreLabel) {
         this.frame = frame;
+        this.scoreArgent = scoreArgent;
+        this.scoreOr = scoreOr;
+        this.scoreLabel = scoreLabel;
 
         this.jeu = new Jeu(660, 360,
                 new Cercle(new Coordonnees(width / 2, height / 2), (width > height ? height : width) / 2));
@@ -64,13 +72,40 @@ public class JeuGraphique extends JComponent {
             System.exit(3);
         }
 
-        jeu.placePion(jeu.getPions().get(0), new Coordonnees(330, 180));
-        jeu.placePion(jeu.getPions().get(1), new Coordonnees(330, 250));
-
         // frame.add(this); // Already added in InterfaceGraphique
+        setOpaque(true);
+        setBackground(Color.BLACK);
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseReleased(MouseEvent e) {
 
+                DragLayer layer = (DragLayer) frame.getGlassPane();
+
+                if (layer.getPayload() != null) {
+
+                    System.out.println("DROP détecté dans plateau");
+
+                    Coordonnees model = screenToModel(e.getX(), e.getY());
+
+                    // ici tu places ton pion dans le modèle
+                    game.placerPionDepuisDrag(model, layer.getPayload());
+
+                    layer.clear();
+                    repaint();
+                }
+            }
+        });
+
+    }
+
+    public void refreshScores() {
+        System.out.println("Score OR = " + jeu.getJoueurs()[0].getScoreTotal());
+        System.out.println("Score ARGENT = " + jeu.getJoueurs()[1].getScoreTotal());
+        scoreOr.updateFromGame(jeu.getJoueurs()[0]);
+        scoreArgent.updateFromGame(jeu.getJoueurs()[1]);
+        scoreLabel.setText(jeu.getJoueurs()[1].getScoreTotal() + " - " + jeu.getJoueurs()[0].getScoreTotal());
     }
 
     public Coordonnees screenToModel(int screenX, int screenY) {
@@ -117,13 +152,14 @@ public class JeuGraphique extends JComponent {
     public void paintComponent(Graphics g) {
         ArrayList<Pion> pions = jeu.getPions();
         ArrayList<Fleur> fleurs = jeu.getFleurs();
-         
+        g.setColor(getBackground());
+        g.fillRect(0, 0, getWidth(), getHeight());
 
         int componentWidth = getWidth();
         int componentHeight = getHeight();
 
         int boardSize = Math.min(componentWidth, componentHeight);
-        int taille = (int)(boardSize*0.05); // taille des fleures relative à la taille du plateau
+        int taille = (int) (boardSize * 0.05); // taille des fleures relative à la taille du plateau
         int xOffset = (componentWidth - boardSize) / 2;
         int yOffset = (componentHeight - boardSize) / 2;
 
@@ -210,7 +246,7 @@ public class JeuGraphique extends JComponent {
                     15);
         }
 
-        //aligner les fleurs sélectionnées
+        // aligner les fleurs sélectionnées
 
         if (f1 != null && f2 != null && jeu.fleursConnectées(f1, f2)) {
 

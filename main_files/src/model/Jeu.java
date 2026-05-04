@@ -1,6 +1,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 import global.Configuration;
@@ -228,6 +229,7 @@ public class Jeu {
     /* ============= fonctions auxiliares ================= */
 
     // on verifie si la position où on place le pion est libre
+    //A REVOIR
     private boolean positionLibrePourPion(Coordonnees pos) {
         // on verifie qu'il y a une distance avec toutes les fleurs
         /*
@@ -488,6 +490,22 @@ public class Jeu {
         fleurSelectionnee2 = null;
 
     }
+
+
+    public Map<Types.TypeFleur, Integer> getScore(Joueur joueur) {
+
+    Map<Types.TypeFleur, Integer> map = new java.util.HashMap<>();
+
+    for (Types.TypeFleur t : Types.TypeFleur.values()) {
+        map.put(t, 0);
+    }
+
+    for (Fleur f : joueur.getFleursGagnees()) {
+        map.put(f.getType(), map.get(f.getType()) + 1);
+    }
+
+    return map;
+}
 
     /*
      * public Fleur getFleurProche(Coordonnees pos, double distanceMax) {

@@ -40,7 +40,6 @@ public class EcouteurDeSouris extends MouseAdapter {
             return;
         }
 
-        
         if (game.fleursConnectées(game.getFleurSelectionnee1(), game.getFleurSelectionnee2())) {
 
             Coordonnees pos = game.milieu(
@@ -51,11 +50,25 @@ public class EcouteurDeSouris extends MouseAdapter {
 
             if (this.game.currentPlayerIndex == 0) {
                 newPion = new Pion(Types.TypePion.OR, pos);
+
+                game.mangerFleurs(
+                        game.getJoueurActuel(),
+                        game.getFleurSelectionnee1(),
+                        game.getFleurSelectionnee2());
+
                 this.game.currentPlayerIndex = 1;
+
             } else {
                 newPion = new Pion(Types.TypePion.ARGENT, pos);
+
+                game.mangerFleurs(
+                        game.getJoueurActuel(),
+                        game.getFleurSelectionnee1(),
+                        game.getFleurSelectionnee2());
+
                 this.game.currentPlayerIndex = 0;
             }
+            jeuGraphique.refreshScores();
 
             if (this.game.placePion(newPion, pos)) {
                 this.game.getPions().add(newPion);
@@ -67,8 +80,16 @@ public class EcouteurDeSouris extends MouseAdapter {
                 this.jeuGraphique.repaint();
             }
         }
+
+        
     }
 
+
+
+    @Override 
+    public void mouseReleased(MouseEvent e) {
+        System.out.println("Souris relâchée: (" + e.getX() + ", " + e.getY() + ")");
+    }           
     /*
      * @Override
      * public void mouseMoved(MouseEvent e) {
