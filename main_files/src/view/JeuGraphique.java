@@ -14,6 +14,9 @@ import javax.swing.JLabel;
 import org.w3c.dom.events.MouseEvent;
 import java.awt.BorderLayout;
 import java.awt.RenderingHints;
+import javax.imageio.ImageIO;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 
@@ -114,8 +117,8 @@ public class JeuGraphique extends JComponent {
                     repaint();
                 }
             }
-        });
- */
+        }); */
+
     }
 
     public void refreshScores() {
