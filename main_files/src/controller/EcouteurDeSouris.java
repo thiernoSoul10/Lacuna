@@ -24,6 +24,19 @@ public class EcouteurDeSouris extends MouseAdapter {
 
         Coordonnees modelPos = jeuGraphique.screenToModel(x, y);
 
+        // appeler la deuxieme phase du jeu(elle ne s'execute que si tous les pions sont placés)
+        // et celà est assurer dans la fonction dans le modèle déjà
+
+        if( game.secondePhase() ){
+              System.out.println("seconde phase"); // Affichage à remplacer par la méthode d'affichage dans config
+              jeuGraphique.refreshScores();
+
+              jeuGraphique.repaint();
+
+              System.out.println("Fin de la seconde phase"); 
+              return ; //fin du jeu
+        }
+
 
         // Vérifie si clic dans le cercle
         if (!game.getCercleDeJeu().contientPoint(modelPos)) {

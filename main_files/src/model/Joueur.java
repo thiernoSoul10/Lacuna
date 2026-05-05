@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class Joueur {
+    private static final int NB_COULEURS = 6;
     protected String nom;
     protected Types.TypePion typePion;
     protected List<Fleur> fleursGagnees;
@@ -52,7 +53,7 @@ public abstract class Joueur {
         int compteur = 0;
 
         for (Types.TypeFleur type : Types.TypeFleur.values()) {
-            if (nbFleursDeCouleur(type) >= 4) {
+            if (nbFleursDeCouleur(type) >= NB_COULEURS) {
                 compteur++;
             }
         }
@@ -61,7 +62,7 @@ public abstract class Joueur {
     }
 
     public boolean aGagne() {
-        return nbCouleursGagnees() >= 4;
+        return nbCouleursGagnees() >= NB_COULEURS; // à revoir car c'est en fonction du nombre de couleur predefinis
     }
 
     public void reset() {

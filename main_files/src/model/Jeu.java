@@ -22,6 +22,8 @@ public class Jeu {
     private static final double DIST_MIN_FLEURS = 30; // distance min entre les fleurs
     private static final int NB_JOUEURS = 2;
     private static final int MAX_PIONS_PAR_JOUEUR = 6;
+    private static final int NB_COULEURS = 6;
+
 
     //// Attributs pour les joueurs
     private Joueur[] joueurs; // la liste des joueurs
@@ -183,7 +185,7 @@ public class Jeu {
         fleurs.clear();
 
         for (Types.TypeFleur type : Types.TypeFleur.values()) {
-            for (int i = 0; i < 7; i++) {
+            for (int i = 0; i < 7; i++) { //CHAQUE COULEUR À 6 PIONS    
                 Coordonnees pos = genererPositionAleatoire(fleurs);
                 fleurs.add(new Fleur(type, pos));
             }
@@ -312,7 +314,17 @@ public class Jeu {
     }
 
     // pour jouer un coup (controller appelle ça )
+    // c'est la premiere phase du jeu
     public void jouerCoup(Joueur joueur, Pion pion, Coordonnees pos, Fleur f1, Fleur f2) {
+
+          // si tous les pions sont placés
+          //pas besoin de  cette fonction ici car jouer coup est pour la premiere 
+          //phase du jeu
+        /*if (tousLesPionsPlaces()) {
+            attribuerFleursRestantes();// on attribue les fleurs restantes
+            return; // fin du jeu
+        }*/
+
 
         if (!placePion(pion, pos))
             return;
@@ -323,14 +335,19 @@ public class Jeu {
             return;
         }
 
-        // si tous les pions sont placés
-        if (tousLesPionsPlaces()) {
-            attribuerFleursRestantes();// on attribue les fleurs restantes
-            return; // fin du jeu
-        }
-
+      
         joueurSuivant();// passons au joueur suivant
 
+    }
+
+    //fonction pour la seconde phase du jeu (controller appelle ça aussi )
+    public boolean secondePhase(){
+      
+        if (tousLesPionsPlaces()) {
+            attribuerFleursRestantes();// on attribue les fleurs restantes
+            return true; // fin du jeu
+        }
+        return false;
     }
 
     /* ============= fonctions auxiliares ================= */
@@ -471,6 +488,7 @@ public class Jeu {
         }
         Configuration.debugeur("#\n");
     }
+//////////////////////////////////////////////////////////////////////
 
     public boolean toucherFleur(Coordonnees pos) {
         for (Fleur f : fleurs) {
