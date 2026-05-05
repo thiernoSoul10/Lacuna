@@ -19,7 +19,9 @@ java -cp bin main.Lacuna
 ou lancer le fichier run.sh en lui donnant les droit d'execution
 
 # A faire 
-
+Correction des bugs suivant : 
+- Grille score: ligne ROSE manquante dans l'affichage 
+- Avantage initial n'est pas dans undoStack
 
 # Faycal
 
