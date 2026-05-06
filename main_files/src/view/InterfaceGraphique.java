@@ -85,6 +85,14 @@ public class InterfaceGraphique implements Runnable {
         instructionLabel.setBackground(Color.BLACK);
         instructionLabel.setOpaque(true);
 
+        // ================= MESSAGE DE STATUT (Feedback)=================
+        JLabel statusLabel = new JLabel("Bienvenue dans le jeu !", SwingConstants.CENTER);
+        statusLabel.setForeground(Color.LIGHT_GRAY);
+        statusLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        statusLabel.setPreferredSize(new Dimension(0, 35));
+        statusLabel.setBackground(Color.BLACK);
+        statusLabel.setOpaque(true);
+
         // ================= ZONE JEU (ROW) =================
         FlexPanel gameRow = new FlexPanel();
         gameRow.setDirection(FlexPanel.Direction.ROW);
@@ -92,9 +100,14 @@ public class InterfaceGraphique implements Runnable {
         gameRow.setAlign(FlexPanel.Align.STRETCH);
         gameRow.setBackground(Color.BLACK);
 
-        JeuGraphique aire = new JeuGraphique(frame, scoreArgent, scoreOr, scoreLabel, instructionLabel);
+        JeuGraphique aire = new JeuGraphique(frame, scoreArgent, scoreOr, scoreLabel, instructionLabel, statusLabel);
         aire.setBackground(Color.BLACK);
         aire.setOpaque(true);
+
+        // Mettre à jour le statusLabel avec le joueur qui commence
+        statusLabel.setText("Bienvenue ! " + aire.jeu.getJoueurActuel().getTypePion() + " commence.");
+        instructionLabel.setText("Phase d'avantage : Joeur " + aire.jeu.getJoueurActuel().getTypePion() + " doit choisir une fleur");   
+
 
         // ================= BOUTONS UNDO/REDO/RESET =================
         FlexPanel buttonPanel = new FlexPanel();
@@ -169,6 +182,8 @@ public class InterfaceGraphique implements Runnable {
         root.setFlexGrow(scoreHeader, 0);
         root.add(instructionLabel);
         root.setFlexGrow(instructionLabel, 0);
+        root.add(statusLabel);
+        root.setFlexGrow(statusLabel, 0);
         root.add(gameRow);
         root.setFlexGrow(gameRow, 1);
         root.add(buttonPanel);

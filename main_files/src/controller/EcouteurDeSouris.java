@@ -47,6 +47,7 @@ public class EcouteurDeSouris extends MouseAdapter {
         // Sélection de fleur
         if (game.toucherFleur(modelPos)) {
             System.out.println("Clic sur une fleur !");
+            jeuGraphique.refreshScores();
             jeuGraphique.repaint();
             return;
         }

@@ -53,6 +53,15 @@ public class Jeu {
     // Avantage du joueur qui commence
     private boolean avantageInitialApplique = false;
     private boolean enPhaseSelectionAvantage = false;
+    private String feedbackMessage = "";
+
+    public String getFeedbackMessage() {
+        return feedbackMessage;
+    }
+
+    public void setFeedbackMessage(String feedbackMessage) {
+        this.feedbackMessage = feedbackMessage;
+    }
 
     ////////// la classe ActionJeu //////////////////
     public static class ActionJeu {// pour l'undo redo
@@ -64,7 +73,10 @@ public class Jeu {
 
         public ActionJeu(Pion pion, Fleur f1, Fleur f2, Joueur joueur) {
             this.pion = pion;
-            this.position = pion.getPosition() != null ? new Coordonnees(pion.getPosition().getX(), pion.getPosition().getY()) : null;
+            //verifier que pion et sa position ne sont pas null avant de sauvegarder la position
+            this.position = (pion != null && pion.getPosition() != null)
+                    ? new Coordonnees(pion.getPosition().getX(), pion.getPosition().getY())
+                    : null;
             this.f1 = f1;
             this.f2 = f2;
             this.joueur = joueur;
@@ -176,6 +188,7 @@ public class Jeu {
                     new JoueurHumain("Joueur 2", Types.TypePion.ARGENT)
             };
             currentPlayerIndex = random.nextInt(getNbJoueurs());
+            setFeedbackMessage(feedbackMessage + " Le joueur qui commence est : " + getJoueurActuel().getNom() + " (" + getJoueurActuel().getTypePion() + ").") ;
         }
     }
 
@@ -205,7 +218,9 @@ public class Jeu {
 
     private void demarrerPhaseSelectionAvantage() {
         enPhaseSelectionAvantage = true;
-        System.out.println("Phase d'avantage initial: " + getJoueurActuel().getNom() + " doit choisir une fleur");
+        //statusLabel.setText("Phase d'avantage initial: " + getJoueurActuel().getNom() + " doit choisir une fleur");
+        setFeedbackMessage("Phase d'avantage initial: " + getJoueurActuel().getTypePion() + " doit choisir une fleur");
+        //System.out.println("Phase d'avantage initial: " + getJoueurActuel().getNom() + " doit choisir une fleur");
     }
 
     public void appliquerAvantageAvecFleur(Fleur fleurChoisie) {
@@ -214,7 +229,8 @@ public class Jeu {
             Joueur joueurCommence = getJoueurActuel();
             joueurCommence.ajouterFleur(fleurChoisie);
             fleurs.remove(fleurChoisie);
-
+            ActionJeu action = new ActionJeu(null, fleurChoisie, null, joueurCommence);
+            undoStack.push(action);
             avantageInitialApplique = true;
             enPhaseSelectionAvantage = false;
 
@@ -294,22 +310,22 @@ public class Jeu {
     public boolean placePion(Pion pion, Coordonnees pos) {
 
         if (!peutPlacerPionDeType(pion.getType())) {
-            System.out.println(
-                    "IMPOSSIBLE DE PLACER PLUS DE " + MAX_PIONS_PAR_JOUEUR + " PIONS DE CE TYPE : " + pion.getType());
+            setFeedbackMessage("Impossible : plus de pions de type " + pion.getType() + " disponibles.");
             return false;
         }
 
         if (!cercleDeJeu.contientPoint(pos)) {
-            System.out.println("PION HORS DU CERCLE : " + pos.getX() + ", " + pos.getY());
+            setFeedbackMessage("Impossible : le pion doit être placé à l'intérieur du cercle.");
             return false;
         }
 
         if (!positionLibrePourPion(pos)) {
-            System.out.println("POSITION NON APPROPRIEE : " + pos.getX() + ", " + pos.getY());
+            setFeedbackMessage("Impossible : la position est déjà occupée ou trop proche d'un autre pion.");
             return false;
         }
 
         pion.setPosition(pos);
+        setFeedbackMessage("Pion " + pion.getType() + " placé avec succès.");
         return true;
     }
 
@@ -335,7 +351,10 @@ public class Jeu {
             return;
         }
 
-      
+        //ActionJeu action = new ActionJeu(pion, f1, f2, joueur);
+        //undoStack.push(action);
+
+
         joueurSuivant();// passons au joueur suivant
 
     }
@@ -498,35 +517,41 @@ public class Jeu {
                 // Phase de sélection d'avantage initial
                 if (enPhaseSelectionAvantage) {
                     appliquerAvantageAvecFleur(f);
+                    setFeedbackMessage("Avantage initial : " + getJoueurActuel().getNom() + " a choisi une fleur " + f.getType() + ".");
                     return true;
                 }
 
                 if (f == fleurSelectionnee1) {
                     fleurSelectionnee1 = null;
+                    setFeedbackMessage("Sélection annulée pour la première fleur.");
                     return true;
                 }
 
                 if (f == fleurSelectionnee2) {
                     fleurSelectionnee2 = null;
+                    setFeedbackMessage("Sélection annulée pour la seconde fleur.");
                     return true;
                 }
 
                 if (fleurSelectionnee1 == null) {
                     fleurSelectionnee1 = f;
+                    setFeedbackMessage("Première fleur sélectionnée : " + f.getType() + ".");
                     return true;
                 }
 
                 if (fleurSelectionnee2 == null) {
                     fleurSelectionnee2 = f;
+                    setFeedbackMessage("Seconde fleur sélectionnée : " + f.getType() + ".");
                     return true;
                 }
 
                 fleurSelectionnee1 = f;
                 fleurSelectionnee2 = null;
-
+                setFeedbackMessage("Nouvelle première fleur sélectionnée : " + f.getType() + ". Choisissez une seconde fleur.");
                 return true;
             }
         }
+        setFeedbackMessage("Aucune fleur touchée. Cliquez sur une fleur visible dans le cercle.");
         return false;
     }
 
@@ -660,7 +685,17 @@ public class Jeu {
         if (!this.undoStack.isEmpty()) {
             ActionJeu action = this.undoStack.pop();
             // Annuler l'action
-            action.pion.setPosition(null); // Retirer le pion du plateau
+            if (action.pion != null) {
+                action.pion.setPosition(null); // Retirer le pion du plateau
+                joueurPrecedent();
+                setFeedbackMessage("Undo : le dernier pion a été retiré du plateau.");
+            } else {
+                // Annuler un avantage initial : remettre le jeu en phase de sélection
+                avantageInitialApplique = false;
+                enPhaseSelectionAvantage = true;
+                setFeedbackMessage("Undo : avantage initial annulé. Choisissez une nouvelle fleur.");
+            }
+
             if (action.f1 != null) {
                 action.joueur.getFleursGagnees().remove(action.f1); // Retirer la fleur du joueur
                 fleurs.add(action.f1); // Remettre la fleur sur le plateau
@@ -669,29 +704,49 @@ public class Jeu {
                 action.joueur.getFleursGagnees().remove(action.f2); // Retirer la fleur du joueur
                 fleurs.add(action.f2); // Remettre la fleur sur le plateau
             }
-            joueurPrecedent();
             this.redoStack.push(action); // Ajouter l'action annulée à la pile de redo
+        } else {
+            setFeedbackMessage("Rien à annuler.");
         }
     }
 
     public void redo() {
         if (!this.redoStack.isEmpty()) {
             ActionJeu action = this.redoStack.pop();
-            // Refaire l'action
-            if (placePion(action.pion, action.position)) { // Replacer le pion à la position sauvegardée
+            if (action.pion != null) {
+                // Refaire une action de placement de pion
+                if (placePion(action.pion, action.position)) { // Replacer le pion à la position sauvegardée
+                    if (action.f1 != null) {
+                        action.joueur.ajouterFleur(action.f1); // Retirer la fleur du plateau et la donner au joueur
+                        fleurs.remove(action.f1);
+                    }
+                    if (action.f2 != null) {
+                        action.joueur.ajouterFleur(action.f2); // Retirer la fleur du plateau et la donner au joueur
+                        fleurs.remove(action.f2);
+                    }
+                    joueurSuivant();
+                    setFeedbackMessage("Redo : le coup a été refait.");
+                    this.undoStack.push(action); // Ajouter l'action refaite à la pile d'undo
+                } else {
+                    setFeedbackMessage("Impossible de refaire l'action : placement du pion invalide.");
+                }
+            } else {
+                // Refaire un avantage initial
                 if (action.f1 != null) {
-                    action.joueur.ajouterFleur(action.f1); // Retirer la fleur du plateau et la donner au joueur
+                    action.joueur.ajouterFleur(action.f1);
                     fleurs.remove(action.f1);
                 }
                 if (action.f2 != null) {
-                    action.joueur.ajouterFleur(action.f2); // Retirer la fleur du plateau et la donner au joueur
+                    action.joueur.ajouterFleur(action.f2);
                     fleurs.remove(action.f2);
                 }
-                joueurSuivant();
-                this.undoStack.push(action); // Ajouter l'action refaite à la pile d'undo
-            } else {
-                System.out.println("Impossible de refaire l'action : placement du pion invalide.");
+                avantageInitialApplique = true;
+                enPhaseSelectionAvantage = false;
+                setFeedbackMessage("Redo : avantage initial réappliqué.");
+                this.undoStack.push(action);
             }
+        } else {
+            setFeedbackMessage("Rien à refaire.");
         }
     }
 
@@ -705,6 +760,7 @@ public class Jeu {
         demarrerPhaseSelectionAvantage();
         undoStack.clear();
         redoStack.clear();
+        setFeedbackMessage("Partie réinitialisée. Choisissez une fleur pour l'avantage initial.");
     }
 
     public void placerPionDepuisDrag(Coordonnees pos, Object payload) {

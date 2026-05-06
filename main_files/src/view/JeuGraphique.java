@@ -25,6 +25,7 @@ public class JeuGraphique extends JComponent {
     private Score scoreArgent, scoreOr;
     private JLabel scoreLabel;
     private JLabel instructionLabel;
+    private JLabel statusLabel;
 
     // Images
     private Image rougeImg, bleueImg, jauneImg, verteImg, orangeImg, violetteImg, roseImg;
@@ -36,13 +37,14 @@ public class JeuGraphique extends JComponent {
     private PionOr rightPile;
 
     public JeuGraphique(JFrame frame, Score scoreArgent, Score scoreOr,
-            JLabel scoreLabel, JLabel instructionLabel) {
+            JLabel scoreLabel, JLabel instructionLabel, JLabel statusLabel) {
 
         this.frame = frame;
         this.scoreArgent = scoreArgent;
         this.scoreOr = scoreOr;
         this.scoreLabel = scoreLabel;
         this.instructionLabel = instructionLabel;
+        this.statusLabel = statusLabel;
 
         this.jeu = new Jeu(width, height,
                 new Cercle(new Coordonnees(width / 2, height / 2),
@@ -136,16 +138,36 @@ public class JeuGraphique extends JComponent {
             rightPile.repaint();
 
         updateInstructionMessage();
+        updateStatusMessage();
     }
 
     private void updateInstructionMessage() {
         if (jeu.isEnPhaseSelectionAvantage()) {
             instructionLabel.setText(
-                    jeu.getJoueurActuel().getNom() +
+                    jeu.getJoueurActuel().getTypePion() +
                             " : Choisissez une fleur pour votre avantage");
+            return;
+        }
+
+        if (jeu.getFleurSelectionnee1() == null) {
+            instructionLabel.setText("Joueur " + (jeu.getJoueurActuel().getTypePion()) + " : Cliquez sur une fleur pour commencer.");
+        } else if (jeu.getFleurSelectionnee2() == null) {
+            instructionLabel.setText("Sélectionnez une seconde fleur du même type.");
+        } else if (jeu.fleursConnectées(jeu.getFleurSelectionnee1(), jeu.getFleurSelectionnee2())) {
+            instructionLabel.setText("Fleurs connectées : un pion sera placé en cliquant.");
         } else {
-            instructionLabel.setText(
-                    "Au tour de " + jeu.getJoueurActuel().getNom());
+            instructionLabel.setText("Fleurs non connectées : choisissez une autre seconde fleur.");
+        }
+    }
+
+    private void updateStatusMessage() {
+        if (statusLabel != null) {
+            String message = jeu.getFeedbackMessage();
+            if (message == null || message.trim().isEmpty()) {
+                statusLabel.setText("En attente d'une action...");
+            } else {
+                statusLabel.setText(message);
+            }
         }
     }
 
