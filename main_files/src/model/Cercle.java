@@ -64,7 +64,7 @@ public class Cercle {
     //attention: on suppose ici que si le point est sur la circonference 
     //alors il n'appartient au cercle ( c'est pour celà on a mis <=  et non < )
     public boolean contientPoint(Coordonnees p){
-        return distanceAuCentre(p) <= rayon ;
+        return distanceAuCentre(p) <= (double)rayon ;
     }
 
     // Cette methode permet de copier le cercle actuel (je suppose qu'elle nous aidera peut être pour le future)
