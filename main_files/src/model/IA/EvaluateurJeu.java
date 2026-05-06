@@ -23,7 +23,7 @@ public class EvaluateurJeu {
 
     // Renvoie le nombre de couleurs majoritaires pour un joueur et un état donné
     public int compterCouleursMajoritaires(EtatJeu etat, indexJoueur){
-        return 0
+        return 0;
     }
 
     // Renvoie le bonus pour départager deux coups de valeures égales
