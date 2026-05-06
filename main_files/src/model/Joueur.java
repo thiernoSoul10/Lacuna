@@ -53,7 +53,7 @@ public abstract class Joueur {
         int compteur = 0;
 
         for (Types.TypeFleur type : Types.TypeFleur.values()) {
-            if (nbFleursDeCouleur(type) >= NB_COULEURS) {
+            if (nbFleursDeCouleur(type) >= 4) {
                 compteur++;
             }
         }
@@ -61,8 +61,10 @@ public abstract class Joueur {
         return compteur;
     }
 
+
+
     public boolean aGagne() {
-        return nbCouleursGagnees() >= NB_COULEURS; // à revoir car c'est en fonction du nombre de couleur predefinis
+        return nbCouleursGagnees() >= 4 ; 
     }
 
     public void reset() {

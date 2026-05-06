@@ -18,8 +18,7 @@ public class EvaluateurJeu {
         int bonusJoueur = bonus(etat, indexJoueur, indexIA);
 
         // Formule de calcul du score
-        return (couleursIA - couleursJoueur) * 100
-                + (bonusIA - bonusJoueur) * 10;
+        return (couleursIA - couleursJoueur) * 100 + (bonusIA - bonusJoueur) * 10;
     }
 
     // Renvoie le nombre de couleurs majoritaires pour un joueur et un état donné
